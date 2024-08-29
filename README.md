@@ -54,7 +54,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For any inquiries or feedback, please contact:
 
-- **Amlan Bardhan**
+- **Aishik Dasgupta**
 - Email: [itsdg19@gmail.com](mailto:itsdg19@gmail.com)
 - GitHub: [AishikDasgupta](https://github.com/AishikDasgupta)
 

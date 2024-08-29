@@ -43,7 +43,6 @@ SimRecruit is a Python-based Applicant Tracking System (ATS) simulator. It allow
 
 ## Screenshots 📸
 
-(Shall soon add a WEBAPP screenshot here)
 ![Screenshot from 2024-08-29 22-29-05](https://github.com/user-attachments/assets/51d078c9-9542-41ec-b3f3-dd2dcd5405cb)
 
 

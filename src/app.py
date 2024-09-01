@@ -25,23 +25,53 @@ def match_keywords(resume_keywords, job_keywords):
     matched_keywords = set(resume_keywords).intersection(set(job_keywords))
     return len(matched_keywords) / len(job_keywords) * 100 if job_keywords else 0
 
-# Streamlit app title and description
-st.title("📝 ATS Keyword Matching Simulator")
-st.subheader("- Created by AISHIK DASGUPTA")
-st.subheader("Evaluate your resume against job descriptions with AI.")
-st.markdown("Upload your resume as a PDF and enter the job description below to get a keyword match score. 🎯")
+# Load custom CSS
+def load_css(css_file):
+    with open(css_file) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-# Layout with columns for resume and job description input
+# Load custom HTML
+def load_html(html_file):
+    with open(html_file, 'r') as f:
+        html_content = f.read()
+    st.markdown(html_content, unsafe_allow_html=True)
+
+# Load the CSS and HTML files
+load_css("/home/malfoy2003/Desktop/projects/ATS_Simulator/src/style.css")
+load_html("/home/malfoy2003/Desktop/projects/ATS_Simulator/src/index.html")
+
+# Streamlit app content
+st.markdown("## Upload Your Resume and Job Description")
+
 col1, col2 = st.columns(2)
 
 with col1:
-    resume = st.file_uploader("📄 Upload your resume", type="pdf")
+    resume = st.file_uploader("📄 Upload your resume", type="pdf", key="resume_upload")
 
 with col2:
-    job_description = st.text_area("💼 Paste the job description")
+    job_description = st.text_area("💼 Paste the job description", key="job_description")
 
-# Button to trigger the analysis
-if st.button("Analyze"):
+# HTML button
+analyze_button_html = """
+<div style='text-align: center;'>
+    <button type="button" class="button" id="analyze-button">Analyze</button>
+</div>
+"""
+
+# Inject HTML button into Streamlit app
+st.markdown(analyze_button_html, unsafe_allow_html=True)
+
+# JavaScript to trigger Streamlit's rerun when the button is clicked
+st.markdown("""
+    <script>
+    document.getElementById("analyze-button").addEventListener("click", function() {
+        window.parent.document.querySelector("button").click();
+    });
+    </script>
+    """, unsafe_allow_html=True)
+
+# Button interaction handling (detecting Streamlit's show score button click)
+if st.button("show score", key="analyze_button"):
     if resume and job_description:
         with st.spinner("🔍 Extracting and matching keywords..."):
             # Progress bar to simulate processing
@@ -61,11 +91,11 @@ if st.button("Analyze"):
 
         # Display the match score with color-coded feedback
         if score < 50:
-            st.markdown(f"❌ **Keyword Match Score: <span style='color:red'>{score:.2f}%</span>**", unsafe_allow_html=True)
+            st.markdown(f"<div class='error'>❌ Keyword Match Score: <span>{score:.2f}%</span></div>", unsafe_allow_html=True)
         elif 50 <= score < 75:
-            st.markdown(f"⚠️ **Keyword Match Score: <span style='color:yellow'>{score:.2f}%</span>**", unsafe_allow_html=True)
+            st.markdown(f"<div class='warning'>⚠️ Keyword Match Score: <span>{score:.2f}%</span></div>", unsafe_allow_html=True)
         else:
-            st.markdown(f"✅ **Keyword Match Score: <span style='color:green'>{score:.2f}%</span>**", unsafe_allow_html=True)
+            st.markdown(f"<div class='result'>✅ Keyword Match Score: <span>{score:.2f}%</span></div>", unsafe_allow_html=True)
 
         # Display extracted keywords
         st.markdown("### 📝 Extracted Keywords from Resume:")
@@ -75,14 +105,4 @@ if st.button("Analyze"):
         st.write(", ".join(job_keywords[:20]))  # Display first 20 keywords
 
     else:
-        st.error("⚠️ Please upload a resume and enter a job description.")
-
-# Sidebar for settings
-st.sidebar.title("📊 ATS Simulator Settings")
-st.sidebar.markdown("Use the options below to customize the ATS simulator.")
-matching_algorithm = st.sidebar.selectbox("Choose matching algorithm", ["Basic Match", "Weighted Match", "Synonym Match"])
-
-# to run the first load into the virtual environment that has been  setup using the bash command:
-# source /home/malfoy2003/Desktop/projects/ATS_Simulator/venv/bin/activate (for my device)
-# then run the WebApp using the bash command: streamlit run /home/malfoy2003/Desktop/projects/ATS_Simulator/src/app.py (again for my device specifically)
-
+        st.markdown("<div class='error'>⚠️ Please upload a resume and enter a job description.</div>", unsafe_allow_html=True)
